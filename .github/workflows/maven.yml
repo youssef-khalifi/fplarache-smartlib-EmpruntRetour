@@ -1,4 +1,4 @@
-name: fplarache-smartlib-EmpruntRetour
+name: EmpruntRetour CI CD Pipeline
 
 on:
   push:
