@@ -9,8 +9,6 @@ import java.util.Date;
 
 @Data
 public class Livre {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titre;
     private String auteur;

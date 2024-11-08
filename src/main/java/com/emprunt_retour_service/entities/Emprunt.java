@@ -9,16 +9,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Data@Entity@AllArgsConstructor@NoArgsConstructor@Builder
 public class Emprunt {
 
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate dateDebut;
-    private LocalDate dateFin;
+    private Date dateDebut;
+    private Date dateFin;
+    @Enumerated(EnumType.STRING)
     private EmpruntStatus status;
-    private LocalDate dateRetour;
+    private Date dateRetour;
     private Long id_user;
     private Long id_livre;
 

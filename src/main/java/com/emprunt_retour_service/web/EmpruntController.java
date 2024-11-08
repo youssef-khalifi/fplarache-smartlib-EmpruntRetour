@@ -16,13 +16,11 @@ public class EmpruntController {
 
     private final EmpruntService empruntService;
 
-
     @PostMapping
     public ResponseEntity<Emprunt> create(@RequestBody Emprunt emprunt) {
         Emprunt createdEmprunt = empruntService.create(emprunt);
         return new ResponseEntity<>(createdEmprunt, HttpStatus.CREATED);
     }
-
 
     @GetMapping
     public ResponseEntity<List<Emprunt>> findAll() {
@@ -40,7 +38,6 @@ public class EmpruntController {
         }
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<Emprunt> update(@PathVariable Long id, @RequestBody Emprunt emprunt) {
         try {
@@ -50,7 +47,6 @@ public class EmpruntController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
