@@ -2,7 +2,8 @@ name: EmpruntRetour CI CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    tags:
+      - 'v*'  # This will trigger the workflow when a tag that starts with "v" is pushed
   pull_request:
     branches: [ "main" ]
 
@@ -36,10 +37,11 @@ jobs:
     - name: Login to AWS ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_URI }}
+
     - name: Build Docker image
-      run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:latest -t ${{ secrets.AWS_ECR_REPO_URI }}:v1 .
+      run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:latest -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ github.ref }} .
 
     - name: Push Docker image to AWS ECR
       run: |
         docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest
-        docker push ${{ secrets.AWS_ECR_REPO_URI }}:v1
+        docker push ${{ secrets.AWS_ECR_REPO_URI }}:${{ github.ref }}
