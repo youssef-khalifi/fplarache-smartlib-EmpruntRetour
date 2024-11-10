@@ -34,12 +34,11 @@ jobs:
     - name: Login to AWS ECR
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_URI }}
-    
 
     - name: Get latest version tag
       id: ecr
       run: |
-        IMAGE_TAGS=$(aws ecr list-images --repository-name ${{ secrets.AWS_ECR_REPO_NAME }} --query 'imageIds[*].imageTag' --output text)
+        IMAGE_TAGS=$(aws ecr list-images --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --query 'imageIds[*].imageTag' --output text)
         LATEST_TAG=$(echo "$IMAGE_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1)
         if [ -z "$LATEST_TAG" ]; then
           echo "version=1" >> $GITHUB_ENV
@@ -48,8 +47,6 @@ jobs:
           VERSION_NUM=$((VERSION_NUM+1))
           echo "version=$VERSION_NUM" >> $GITHUB_ENV
         fi
-      env:
-        AWS_ECR_REPO_NAME: ${{ secrets.AWS_ECR_REPO_NAME }}
 
     - name: Build Docker image
       run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:latest -t ${{ secrets.AWS_ECR_REPO_URI }}:v${{ env.version }} .
