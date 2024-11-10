@@ -38,6 +38,7 @@ jobs:
     - name: Manage ECR Image Tags
       id: ecr
       run: |
+        # Fetch the list of tags and identify the latest version
         IMAGE_TAGS=$(aws ecr list-images --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --query 'imageIds[*].imageTag' --output text)
         LATEST_TAG=$(echo "$IMAGE_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1)
 
@@ -50,13 +51,14 @@ jobs:
           aws ecr batch-delete-image --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --image-ids imageTag=$LATEST_TAG
         fi
 
+        # Export the new version tag
         echo "version=v$NEW_VERSION" >> $GITHUB_ENV
 
     - name: Build Docker image
-      run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }} .
+      run: |
+        docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }} -t ${{ secrets.AWS_ECR_REPO_URI }}:latest .
 
     - name: Push Docker image to AWS ECR
       run: |
         docker push ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }}
         docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest
-
