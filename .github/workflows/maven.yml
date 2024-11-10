@@ -35,23 +35,27 @@ jobs:
       run: |
         aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_URI }}
 
-    - name: Get latest version tag
+    - name: Manage ECR Image Tags
       id: ecr
       run: |
         IMAGE_TAGS=$(aws ecr list-images --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --query 'imageIds[*].imageTag' --output text)
         LATEST_TAG=$(echo "$IMAGE_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1)
+
+        # Determine the new version tag
         if [ -z "$LATEST_TAG" ]; then
-          echo "version=1" >> $GITHUB_ENV
+          NEW_VERSION=1
         else
           VERSION_NUM=${LATEST_TAG//v/}
-          VERSION_NUM=$((VERSION_NUM+1))
-          echo "version=$VERSION_NUM" >> $GITHUB_ENV
+          NEW_VERSION=$((VERSION_NUM+1))
+
+          # Delete the previous version
+          aws ecr batch-delete-image --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --image-ids imageTag=$LATEST_TAG
         fi
 
+        echo "version=v$NEW_VERSION" >> $GITHUB_ENV
+
     - name: Build Docker image
-      run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:latest -t ${{ secrets.AWS_ECR_REPO_URI }}:v${{ env.version }} .
+      run: docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }} .
 
     - name: Push Docker image to AWS ECR
-      run: |
-        docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest
-        docker push ${{ secrets.AWS_ECR_REPO_URI }}:v${{ env.version }}
+      run: docker push ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }}
