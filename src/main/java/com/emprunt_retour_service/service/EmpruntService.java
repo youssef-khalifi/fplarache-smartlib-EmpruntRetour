@@ -25,17 +25,17 @@ public class EmpruntService {
 
     public List<Emprunt> findAll() {
         List<Emprunt> emprunts = empruntRepository.findAll();
-        emprunts.forEach(emprunt -> {
+       /* emprunts.forEach(emprunt -> {
             emprunt.setLivre(livreClient.getLivreById(emprunt.getId_livre()));
             emprunt.setUser(userClient.getUserById(emprunt.getId_user()));
-        });
+        });*/
         return emprunts;
     }
 
     public Emprunt findById(Long id) {
         Emprunt emprunt = empruntRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprunt not found"));
-        emprunt.setLivre(livreClient.getLivreById(emprunt.getId_livre()));
-        emprunt.setUser(userClient.getUserById(emprunt.getId_user()));
+       /* emprunt.setLivre(livreClient.getLivreById(emprunt.getId_livre()));
+        emprunt.setUser(userClient.getUserById(emprunt.getId_user()));*/
         return emprunt;
     }
 
