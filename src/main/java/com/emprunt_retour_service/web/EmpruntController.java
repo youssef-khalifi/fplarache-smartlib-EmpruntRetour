@@ -3,10 +3,12 @@ package com.emprunt_retour_service.web;
 import com.emprunt_retour_service.entities.Emprunt;
 import com.emprunt_retour_service.service.EmpruntService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -56,5 +58,25 @@ public class EmpruntController {
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Emprunt>> findByUserId(@PathVariable Long id) {
+        List<Emprunt> emprunts = empruntService.findByUserId(id);
+        return new ResponseEntity<>(emprunts, HttpStatus.OK);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<Emprunt>> findByStatus(@PathVariable String status) {
+        List<Emprunt> emprunts = empruntService.findByStatus(status);
+        return new ResponseEntity<>(emprunts, HttpStatus.OK);
+    }
+
+    @GetMapping("/dateDebut")
+    public List<Emprunt> getEmpruntsByDateDebutBetween(
+            @RequestParam("dateDebut") @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateDebut,
+            @RequestParam("dateFin") @DateTimeFormat(pattern = "dd-MM-yyyy") Date dateFin) {
+        return empruntService.findByDateDebutBetween(dateDebut, dateFin);
     }
 }

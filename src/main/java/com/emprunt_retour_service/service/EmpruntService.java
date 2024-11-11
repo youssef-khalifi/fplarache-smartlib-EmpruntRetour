@@ -3,10 +3,12 @@ package com.emprunt_retour_service.service;
 import com.emprunt_retour_service.client.LivreClient;
 import com.emprunt_retour_service.client.UserClient;
 import com.emprunt_retour_service.entities.Emprunt;
+import com.emprunt_retour_service.entities.EmpruntStatus;
 import com.emprunt_retour_service.repositories.EmpruntRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -52,5 +54,23 @@ public class EmpruntService {
 
     public void delete(Long id) {
         empruntRepository.deleteById(id);
+    }
+
+
+    public List<Emprunt> findByUserId(Long id){
+
+        return empruntRepository.findByIdUser(id);
+    }
+
+    public List<Emprunt> findByStatus(String status){
+        String st = status.toUpperCase();
+        EmpruntStatus status1 = EmpruntStatus.valueOf(st);
+
+
+        return empruntRepository.findByStatus(status1);
+    }
+
+    public List<Emprunt> findByDateDebutBetween(Date startDate, Date endDate) {
+        return empruntRepository.findByDateDebutBetween(startDate, endDate);
     }
 }
