@@ -27,8 +27,8 @@ jobs:
     - name: SonarCloud Scan
       run: |
         mvn sonar:sonar \
-          -Dsonar.projectKey=fplarache-smartlib-empruntretour \
-          -Dsonar.organization=fplarache-smartlib-EmpruntRetour \
+          -Dsonar.projectKey=fplarache-smartlib-EmpruntRetour \
+          -Dsonar.organization=empruntretour \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=25ea79dbbfe9d0a352b8a3f59eaf4e81a7d7c195
           
