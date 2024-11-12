@@ -1,4 +1,12 @@
-FROM openjdk:17
-COPY target/*.jar app.jar
+# First stage: build the application
+FROM maven:3.8.6-eclipse-temurin-17-alpine AS builder
+WORKDIR /app
+COPY pom.xml ./
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Second stage: create a minimal runtime image
+FROM eclipse-temurin:17-jre-alpine
+COPY --from=builder /app/target/*.jar /app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar" , "/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
