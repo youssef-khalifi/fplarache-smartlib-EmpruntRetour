@@ -72,6 +72,8 @@
 ##        docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest
 
 # This is a basic workflow to help you get started with Actions
+
+
 name: Deploy
 # version 7
 # Controls when the action will run. Triggers the workflow on push or pull request
