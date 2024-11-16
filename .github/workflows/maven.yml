@@ -1,72 +1,72 @@
-name: EmpruntRetour CI CD Pipeline
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
-
-    - name: Build with Maven
-      run: mvn clean package -DskipTests
-      
-    - name: SonarCloud Scan
-      run: |
-        mvn sonar:sonar \
-          -Dsonar.projectKey=youssef-khalifi_fplarache-smartlib-EmpruntRetour \
-          -Dsonar.organization=youssef-khalifi \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONARTOKEN }}
+#name: EmpruntRetour CI CD Pipeline
 #
-#    - name: Set up AWS CLI
-#      uses: aws-actions/configure-aws-credentials@v1
+#on:
+#  push:
+#    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v4
+#
+#    - name: Set up JDK 17
+#      uses: actions/setup-java@v4
 #      with:
-#        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        aws-region: ${{ secrets.AWS_REGION }}
+#        java-version: '17'
+#        distribution: 'temurin'
+#        cache: maven
 #
-#    - name: Login to AWS ECR
+#    - name: Build with Maven
+#      run: mvn clean package -DskipTests
+#
+#    - name: SonarCloud Scan
 #      run: |
-#        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_URI }}
-#
-#    - name: Manage ECR Image Tags
-#      id: ecr
-#      run: |
-#        # Fetch the list of tags and identify the latest version
-#        IMAGE_TAGS=$(aws ecr list-images --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --query 'imageIds[*].imageTag' --output text)
-#        LATEST_TAG=$(echo "$IMAGE_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1)
-#
-#        if [ -z "$LATEST_TAG" ]; then
-#          NEW_VERSION=1
-#        else
-#          VERSION_NUM=${LATEST_TAG//v/}
-#          NEW_VERSION=$((VERSION_NUM+1))
-#
-#          aws ecr batch-delete-image --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --image-ids imageTag=$LATEST_TAG
-#        fi
-#
-#        # Export the new version tag
-#        echo "version=v$NEW_VERSION" >> $GITHUB_ENV
-#
-#    - name: Build Docker image
-#      run: |
-#        docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }} -t ${{ secrets.AWS_ECR_REPO_URI }}:latest .
-#
-#    - name: Push Docker image to AWS ECR
-#      run: |
-#        docker push ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }}
-#        docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest
+#        mvn sonar:sonar \
+#          -Dsonar.projectKey=youssef-khalifi_fplarache-smartlib-EmpruntRetour \
+#          -Dsonar.organization=youssef-khalifi \
+#          -Dsonar.host.url=https://sonarcloud.io \
+#          -Dsonar.login=${{ secrets.SONARTOKEN }}
+##
+##    - name: Set up AWS CLI
+##      uses: aws-actions/configure-aws-credentials@v1
+##      with:
+##        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+##        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+##        aws-region: ${{ secrets.AWS_REGION }}
+##
+##    - name: Login to AWS ECR
+##      run: |
+##        aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPO_URI }}
+##
+##    - name: Manage ECR Image Tags
+##      id: ecr
+##      run: |
+##        # Fetch the list of tags and identify the latest version
+##        IMAGE_TAGS=$(aws ecr list-images --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --query 'imageIds[*].imageTag' --output text)
+##        LATEST_TAG=$(echo "$IMAGE_TAGS" | grep -Eo 'v[0-9]+' | sort -V | tail -n 1)
+##
+##        if [ -z "$LATEST_TAG" ]; then
+##          NEW_VERSION=1
+##        else
+##          VERSION_NUM=${LATEST_TAG//v/}
+##          NEW_VERSION=$((VERSION_NUM+1))
+##
+##          aws ecr batch-delete-image --repository-name dev-fpl-larache-smart-lib-service-empruntetretour-repo --image-ids imageTag=$LATEST_TAG
+##        fi
+##
+##        # Export the new version tag
+##        echo "version=v$NEW_VERSION" >> $GITHUB_ENV
+##
+##    - name: Build Docker image
+##      run: |
+##        docker build -t ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }} -t ${{ secrets.AWS_ECR_REPO_URI }}:latest .
+##
+##    - name: Push Docker image to AWS ECR
+##      run: |
+##        docker push ${{ secrets.AWS_ECR_REPO_URI }}:${{ env.version }}
+##        docker push ${{ secrets.AWS_ECR_REPO_URI }}:latest

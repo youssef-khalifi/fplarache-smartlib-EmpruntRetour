@@ -1,52 +1,52 @@
-name: 'Publish API Image'
-description: 'Publish API image to ECR registry'
-
-inputs:
-  service-emprunt-environment:
-    description: 'Environment for service-emprunt'
-    default: 'dev-fpl-larache-smart-lib'
-  published-app:
-    description: 'Name of the JAR file to be built'
-    default: 'target/Emprunt-app-0.1.jar'
-  dockerfile:
-    description: 'Path to the Dockerfile'
-    default: './Dockerfile'
-  cmd:
-    description: 'Command to run the Spring Boot application'
-    default: 'java -jar /app.jar'
-  image-short-name:
-    description: 'Short name for the image'
-    default: 'service-empruntetretour'
-  image-prefix:
-    description: 'Prefix for the image'
-    default: 'dev-fpl-larache-smart-lib'
-  image-tag:
-    description: 'Tag for the Docker image'
-    default: 'latest'
-  ecr-registry:
-    description: 'ECR registry URL'
-    default: '774305596814.dkr.ecr.eu-north-1.amazonaws.com/dev-fpl-larache-smart-lib-service-empruntetretour-repo'
-
-outputs:
-  image-uri:
-    description: 'URI of the published image'
-    value: ${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}:latest
-
-runs:
-  using: 'composite'
-  steps:
-    - shell: bash
-      run: |
-        IMAGENAME="${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}"
-
-        docker build --build-arg JAR_PATH_ARG="${{ inputs.published-app }}" \
-                     --build-arg CMD_ARG="${{ inputs.cmd }}" \
-                     --build-arg ENVIRONMENT_ARG="${{ inputs.service-emprunt-environment }}" \
-                     -f "${{ inputs.dockerfile }}" \
-                     -t "$IMAGENAME:${{ inputs.image-tag }}" .
-
-        docker image tag "$IMAGENAME:${{ inputs.image-tag }}" "$IMAGENAME:latest"
-        docker push "$IMAGENAME:${{ inputs.image-tag }}"
-        docker push "$IMAGENAME:latest"
-
-        echo "image-uri: $IMAGENAME:latest"
+#name: 'Publish API Image'
+#description: 'Publish API image to ECR registry'
+#
+#inputs:
+#  service-emprunt-environment:
+#    description: 'Environment for service-emprunt'
+#    default: 'dev-fpl-larache-smart-lib'
+#  published-app:
+#    description: 'Name of the JAR file to be built'
+#    default: 'target/Emprunt-app-0.1.jar'
+#  dockerfile:
+#    description: 'Path to the Dockerfile'
+#    default: './Dockerfile'
+#  cmd:
+#    description: 'Command to run the Spring Boot application'
+#    default: 'java -jar /app.jar'
+#  image-short-name:
+#    description: 'Short name for the image'
+#    default: 'service-empruntetretour'
+#  image-prefix:
+#    description: 'Prefix for the image'
+#    default: 'dev-fpl-larache-smart-lib'
+#  image-tag:
+#    description: 'Tag for the Docker image'
+#    default: 'latest'
+#  ecr-registry:
+#    description: 'ECR registry URL'
+#    default: '774305596814.dkr.ecr.eu-north-1.amazonaws.com/dev-fpl-larache-smart-lib-service-empruntetretour-repo'
+#
+#outputs:
+#  image-uri:
+#    description: 'URI of the published image'
+#    value: ${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}:latest
+#
+#runs:
+#  using: 'composite'
+#  steps:
+#    - shell: bash
+#      run: |
+#        IMAGENAME="${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}"
+#
+#        docker build --build-arg JAR_PATH_ARG="${{ inputs.published-app }}" \
+#                     --build-arg CMD_ARG="${{ inputs.cmd }}" \
+#                     --build-arg ENVIRONMENT_ARG="${{ inputs.service-emprunt-environment }}" \
+#                     -f "${{ inputs.dockerfile }}" \
+#                     -t "$IMAGENAME:${{ inputs.image-tag }}" .
+#
+#        docker image tag "$IMAGENAME:${{ inputs.image-tag }}" "$IMAGENAME:latest"
+#        docker push "$IMAGENAME:${{ inputs.image-tag }}"
+#        docker push "$IMAGENAME:latest"
+#
+#        echo "image-uri: $IMAGENAME:latest"
