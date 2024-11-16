@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com</groupId>
-    <artifactId>Emprunt_Retour_Service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>Emprunt-app</artifactId>
+    <version>0.1</version>
     <name>Emprunt_Retour_Service</name>
     <description>Emprunt_Retour_Service</description>
     <url/>

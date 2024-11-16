@@ -1,0 +1,39 @@
+name: 'publish api image'
+description: 'publish api image'
+
+inputs:
+  aspnetcore-environment:
+    description: aspnetcore-environment
+  published-app:
+    description: published-app
+  dockerfile:
+    description: Dockerfile
+  cmd:
+    description: cmd
+  image-short-name:
+    description: image-short-name
+  image-prefix:
+    description: image-prefix
+  image-tag:
+    description: image-tag
+  ecr-registry:
+    description: ecr-registry
+
+outputs:
+  image-uri:
+    description: image-uri
+    value: ${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}:latest
+
+runs:
+  using: "composite"
+  steps:
+    - shell: bash
+      run: |
+        export IMAGENAME=${{ inputs.ecr-registry }}/${{ inputs.image-prefix }}-${{ inputs.image-short-name }}
+
+        docker build --build-arg DOTNET_API_PATH_ARG=${{ inputs.published-app }} --build-arg DOTNET_API_CMD_ARG=${{ inputs.cmd }} --build-arg ASPNETCORE_ENVIRONMENT_ARG=${{ inputs.aspnetcore-environment }} -f ${{ inputs.dockerfile}} -t $IMAGENAME:${{ inputs.image-tag }} .
+        docker image tag $IMAGENAME:${{ inputs.image-tag }} $IMAGENAME:latest
+        docker push $IMAGENAME:${{ inputs.image-tag }}
+        docker push $IMAGENAME:latest
+
+        echo "image-uri: $IMAGENAME:latest"
