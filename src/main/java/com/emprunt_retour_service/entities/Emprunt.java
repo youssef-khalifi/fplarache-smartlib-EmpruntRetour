@@ -21,6 +21,7 @@ public class Emprunt {
     @Enumerated(EnumType.STRING)
     private EmpruntStatus status;
     private Date dateRetour;
+
     private Long id_user;
     private Long id_livre;
 
